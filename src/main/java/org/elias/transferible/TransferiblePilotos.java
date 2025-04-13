@@ -19,7 +19,7 @@ public class TransferiblePilotos {
 
     private Integer numero;
 
-    /*
+
     private Equipos equipo;
 
     public Equipos getEquipo() {
@@ -29,7 +29,7 @@ public class TransferiblePilotos {
     public void setEquipo(Equipos equipo) {
         this.equipo = equipo;
     }
-*/
+
 
     public Integer getId() {
         return id;
@@ -88,5 +88,17 @@ public class TransferiblePilotos {
     }
 
 
-
+    @Override
+    public String toString() {
+        return "TransferiblePilotos{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", nacionalidad='" + nacionalidad + '\'' +
+                ", fechaNacimiento=" + fechaNacimiento +
+                ", descripcion='" + descripcion + '\'' +
+                ", numero=" + numero +
+                ", equipo=" + equipo +
+                '}';
+    }
 }

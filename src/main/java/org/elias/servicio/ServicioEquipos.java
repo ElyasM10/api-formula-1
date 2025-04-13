@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import org.elias.acceso.AccesoEquipos;
 import org.elias.transferible.TransferibleEquipos;
 import org.elias.transformador.TransformadorEquipos;
+import org.jboss.logging.Logger;
 
 import java.util.List;
 
@@ -18,10 +19,18 @@ public class ServicioEquipos {
     @Inject
     TransformadorEquipos transformador;
 
+
+    @Inject
+    Logger auditor;
+
     public List<TransferibleEquipos> obtenerTodosLosEquipos(){
 
 
      List<TransferibleEquipos> transferible = transformador.toDTOList(acceso.obtenerEquipos());
+
+        for (TransferibleEquipos equipo : transferible) {
+            auditor.debug(equipo);
+        }
 
      return transferible;
     }

@@ -1,6 +1,7 @@
 package org.elias.modelo;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -30,9 +31,10 @@ public class Pilotos {
     @Column(name = "numero")
     private Integer numero;
 
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipo_id") // Especificamos la columna que será la clave foránea
+
+    @ManyToOne
+    @JoinColumn(name = "equipo_id")
+    @JsonBackReference
     private Equipos equipo;
 
     public Equipos getEquipo() {
@@ -42,7 +44,7 @@ public class Pilotos {
     public void setEquipo(Equipos equipo) {
         this.equipo = equipo;
     }
-     */
+
 
     public Integer getId() {
         return id;

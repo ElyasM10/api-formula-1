@@ -25,7 +25,7 @@ public class TransferibleEquipos {
 
     private String descripcion;
 
-    /*
+
     private List<Pilotos> pilotos;
 
     // Getters y setters
@@ -36,7 +36,7 @@ public class TransferibleEquipos {
     public void setPilotos(List<Pilotos> pilotos) {
         this.pilotos = pilotos;
     }
-*/
+
 
     public Integer getId() {
         return id;
@@ -84,5 +84,18 @@ public class TransferibleEquipos {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    @Override
+    public String toString() {
+        return "TransferibleEquipos{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", pais='" + pais + '\'' +
+                ", jefeEquipo='" + jefeEquipo + '\'' +
+                ", motor='" + motor + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", pilotos=" + pilotos +
+                '}';
     }
 }

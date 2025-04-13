@@ -1,6 +1,7 @@
 package org.elias.modelo;
 
 //import io.vertx.codegen.doc.Text;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -35,8 +36,10 @@ public class Equipos {
     private String descripcion;
 
     // Relación uno a muchos con la entidad Piloto
-   /*
-    @OneToMany(mappedBy = "equipo")
+
+
+    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Pilotos> pilotos;
 
     // Getters y setters
@@ -48,7 +51,7 @@ public class Equipos {
         this.pilotos = pilotos;
     }
 
-*/
+
     public Integer getId() {
         return id;
     }
