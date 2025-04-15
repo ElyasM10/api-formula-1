@@ -22,8 +22,8 @@ public class TransferiblePilotos {
 
     private Equipos equipo;
 
-    public Equipos getEquipo() {
-        return equipo;
+    public String  getEquipo() {
+        return equipo.getNombre();
     }
 
     public void setEquipo(Equipos equipo) {
@@ -98,7 +98,7 @@ public class TransferiblePilotos {
                 ", fechaNacimiento=" + fechaNacimiento +
                 ", descripcion='" + descripcion + '\'' +
                 ", numero=" + numero +
-                ", equipo=" + equipo +
+                ", equipo=" + equipo.getNombre() +
                 '}';
     }
 }
