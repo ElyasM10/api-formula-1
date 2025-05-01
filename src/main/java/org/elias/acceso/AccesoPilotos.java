@@ -1,11 +1,12 @@
 package org.elias.acceso;
 
+import java.util.List;
+
+import org.elias.modelo.Pilotos;
+
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-import org.elias.modelo.Pilotos;
-
-import java.util.List;
 
 @ApplicationScoped
 public class AccesoPilotos  implements PanacheRepositoryBase<Pilotos, Integer> {
@@ -14,5 +15,10 @@ public class AccesoPilotos  implements PanacheRepositoryBase<Pilotos, Integer> {
     public List<Pilotos> obtenerPilotos() {
         return listAll();
     }
+
+     public Pilotos obtenerPilotoPorId(Integer id) {
+        return findById(id);
+    }
+
 
 }

@@ -1,16 +1,16 @@
 package org.elias.servicio;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import org.elias.acceso.AccesoEquipos;
+import java.util.List;
+
 import org.elias.acceso.AccesoPilotos;
-import org.elias.transferible.TransferibleEquipos;
+import org.elias.exception.HttpNoContentException;
+import org.elias.modelo.Pilotos;
 import org.elias.transferible.TransferiblePilotos;
-import org.elias.transformador.TransformadorEquipos;
 import org.elias.transformador.TransformadorPilotos;
 import org.jboss.logging.Logger;
 
-import java.util.List;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ServicioPilotos {
@@ -36,5 +36,22 @@ public class ServicioPilotos {
 
         return transferible;
     }
+
+    public TransferiblePilotos obtenerPilotoPorId(Integer id) {
+    auditor.info("Obteniendo el piloto: " + id);
+    Pilotos resultado = acceso.obtenerPilotoPorId(id);
+
+    if (resultado == null) {
+        throw new HttpNoContentException("No existe el piloto con id: " + id);
+    }
+
+    TransferiblePilotos transferible = transformador.entidadATransferible(resultado);
+
+    if (transferible.getId() == 0) {
+        transferible.setId(null);
+    }
+
+    return transferible;
+}
 
 }
