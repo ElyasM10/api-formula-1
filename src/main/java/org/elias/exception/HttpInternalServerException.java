@@ -1,4 +1,4 @@
-package ar.gob.ushuaia.exception;
+package org.elias.exception;
 
 
 /**

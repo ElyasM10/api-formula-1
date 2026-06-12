@@ -1,62 +1,125 @@
 # api-formula-1
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+API REST desarrollada con Quarkus para consultar datos de Fórmula 1: pilotos y equipos.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Tecnologías
 
-## Running the application in dev mode
+- Java 17
+- Quarkus 3.21.2
+- Hibernate ORM + Panache
+- PostgreSQL
+- MapStruct 1.5.2
+- SmallRye OpenAPI (Swagger)
+- Quarkus REST + Jackson
 
-You can run your application in dev mode that enables live coding using:
+## Requisitos previos
 
-```shell script
+- JDK 17+
+- Maven 3.8+
+- PostgreSQL corriendo en `localhost:5432` con base de datos `postgres`
+
+## Configuración
+
+`src/main/resources/application.properties`:
+
+| Propiedad | Valor por defecto | Descripción |
+|---|---|---|
+| `quarkus.datasource.jdbc.url` | `jdbc:postgresql://localhost:5432/postgres` | URL de la base de datos |
+| `quarkus.datasource.username` | `postgres` | Usuario de la base de datos |
+| `quarkus.hibernate-orm.database.generation` | `none` | No modifica el esquema automáticamente |
+| `quarkus.http.cors.origins` | `*` | CORS habilitado para todos los orígenes |
+
+## Estructura del proyecto
+
+```
+src/main/java/org/elias/
+├── recurso/
+│   ├── RecursoPilotos.java      # REST resource — endpoints GET /pilotos
+│   └── RecursoEquipos.java      # REST resource — endpoints GET /equipos
+├── servicio/
+│   ├── ServicioPilotos.java     # Lógica de negocio para pilotos
+│   └── ServicioEquipos.java     # Lógica de negocio para equipos
+├── acceso/
+│   ├── AccesoPilotos.java       # Repositorio Panache para pilotos
+│   └── AccesoEquipos.java       # Repositorio Panache para equipos
+├── modelo/
+│   ├── Pilotos.java             # Entidad JPA — tabla pilotos
+│   └── Equipos.java             # Entidad JPA — tabla equipos (relación 1:N con pilotos)
+├── transferible/
+│   ├── TransferiblePilotos.java # DTO de respuesta para pilotos
+│   └── TransferibleEquipos.java # DTO de respuesta para equipos
+├── transformador/
+│   ├── TransformadorPilotos.java # Mapper MapStruct entidad → DTO
+│   └── TransformadorEquipos.java # Mapper MapStruct entidad → DTO
+└── exception/
+    ├── ExceptionMappers.java    # Mapper global de excepciones a respuestas HTTP
+    └── Http*.java               # Excepciones HTTP tipadas (400, 403, 404, 409, 500, 204)
+```
+
+## Modelo de datos
+
+**equipos**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | Long | Clave primaria |
+| nombre | String | Nombre del equipo |
+| pais | String | País de origen |
+| jefe_equipo | String | Nombre del director |
+| motor | String | Proveedor de motor |
+| descripcion | String | Descripción del equipo |
+
+**pilotos**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | Long | Clave primaria |
+| nombre | String | Nombre del piloto |
+| apellido | String | Apellido del piloto |
+| nacionalidad | String | Nacionalidad |
+| fecha_nacimiento | Date | Fecha de nacimiento |
+| descripcion | String | Descripción del piloto |
+| numero | Integer | Número de carrera |
+| equipo_id | Long | FK → equipos |
+
+## Endpoints
+
+### Pilotos
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| `GET` | `/pilotos` | Lista todos los pilotos |
+| `GET` | `/pilotos/{id}` | Obtiene un piloto por ID |
+
+### Equipos
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| `GET` | `/equipos` | Lista todos los equipos |
+| `GET` | `/equipos/{id}` | Obtiene un equipo por ID |
+
+## Ejecutar en modo desarrollo
+
+```bash
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+El servicio queda disponible en `http://localhost:8080`.
 
-## Packaging and running the application
+## Swagger UI
 
-The application can be packaged using:
+```
+http://localhost:8080/q/swagger-ui
+```
 
-```shell script
+## Build para producción
+
+```bash
+# JVM
 ./mvnw package
+java -jar target/quarkus-app/quarkus-run.jar
+
+# Nativo
+./mvnw package -Pnative
+./target/api-formula-1-1.0.0-SNAPSHOT-runner
 ```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/api-formula-1-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)

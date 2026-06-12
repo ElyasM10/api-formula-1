@@ -1,10 +1,10 @@
 package org.elias.servicio;
 
-
 import java.util.List;
 
 import org.elias.acceso.AccesoEquipos;
 import org.elias.exception.HttpNoContentException;
+import org.elias.mock.DatosMock;
 import org.elias.modelo.Equipos;
 import org.elias.transferible.TransferibleEquipos;
 import org.elias.transformador.TransformadorEquipos;
@@ -22,38 +22,44 @@ public class ServicioEquipos {
     @Inject
     TransformadorEquipos transformador;
 
-
     @Inject
     Logger auditor;
 
-    public List<TransferibleEquipos> obtenerTodosLosEquipos(){
-
-
-     List<TransferibleEquipos> transferible = transformador.toDTOList(acceso.obtenerEquipos());
-
-        for (TransferibleEquipos equipo : transferible) {
-            auditor.debug(equipo);
+    public List<TransferibleEquipos> obtenerTodosLosEquipos() {
+        try {
+            List<TransferibleEquipos> transferible = transformador.toDTOList(acceso.obtenerEquipos());
+            for (TransferibleEquipos equipo : transferible) {
+                auditor.debug(equipo);
+            }
+            return transferible;
+        } catch (Exception e) {
+            auditor.warn("Base de datos no disponible, devolviendo datos de prueba: " + e.getMessage());
+            return DatosMock.equipos();
         }
-
-     return transferible;
     }
 
-      public TransferibleEquipos obtenerEquipoPorId (Integer id) {
+    public TransferibleEquipos obtenerEquipoPorId(Integer id) {
         auditor.info("Obteniendo el equipo: " + id);
-        Equipos resultado = acceso.obtenerEquipoPorId(id);
-
-        if(resultado == null){
-            throw new HttpNoContentException("No existe el equipo con id: "+id);
+        try {
+            Equipos resultado = acceso.obtenerEquipoPorId(id);
+            if (resultado == null) {
+                throw new HttpNoContentException("No existe el equipo con id: " + id);
+            }
+            TransferibleEquipos transferible = transformador.entidadATransferible(resultado);
+            if (transferible.getId() == 0) {
+                transferible.setId(null);
+            }
+            return transferible;
+        } catch (HttpNoContentException e) {
+            throw e;
+        } catch (Exception e) {
+            auditor.warn("Base de datos no disponible, devolviendo datos de prueba para id " + id + ": " + e.getMessage());
+            TransferibleEquipos mock = DatosMock.equipoPorId(id);
+            if (mock == null) {
+                throw new HttpNoContentException("No existe el equipo con id: " + id);
+            }
+            return mock;
         }
-
-        TransferibleEquipos transferible = transformador.entidadATransferible(resultado);
-
-        if (transferible.getId()==0) {
-            transferible.setId(null);
-        }
-
-
-        return  transferible;
     }
 
 }
